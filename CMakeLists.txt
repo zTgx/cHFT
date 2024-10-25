@@ -11,20 +11,26 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 find_package(Boost REQUIRED COMPONENTS unit_test_framework)
 
 # Include directories
-include_directories( src)  # Add src directory here
+include_directories(src)  # Add src directory here
 include_directories(${Boost_INCLUDE_DIRS})
 
 # Source files
-set(SMA_SRC src/sma.cpp)
-set(TEST_SRC tests/test_sma.cpp)
+file(GLOB SRC src/*.cpp)  # Use file(GLOB ...) to include all .cpp files
+
+set(TEST_SMA_SRC tests/test_sma.cpp)
+set(TEST_OMS_SRC tests/test_oms.cpp)
 
 # Create a library from the SMA source files
-add_library(chtf STATIC ${SMA_SRC})
+add_library(chtf STATIC ${SRC})
 
 # Test target
-add_executable(test_sma ${TEST_SRC})
+add_executable(test_sma ${TEST_SMA_SRC})
 target_link_libraries(test_sma ${Boost_LIBRARIES} chtf)
+
+add_executable(test_oms ${TEST_OMS_SRC})
+target_link_libraries(test_oms ${Boost_LIBRARIES} chtf)
 
 # Enable testing
 enable_testing()
 add_test(NAME TestSMA COMMAND test_sma)
+add_test(NAME TestOMS COMMAND test_oms)
